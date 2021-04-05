@@ -1,0 +1,16 @@
+/elf2uf2
+/_deps
+/pico-sdk
+/generated
+/Makefile
+/cmake_install.cmake
+
+/mpg.bin
+/mpg.dis
+/mpg.elf
+/mpg.elf.map
+/mpg.hex
+/mpg.uf2
+
+CMakeCache.txt
+CMakeFiles
