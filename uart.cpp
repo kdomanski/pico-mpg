@@ -25,8 +25,7 @@ void on_uart_rx() {
 
     if (!busy) {
         if (!temp_queue.empty()) {
-            std::copy(temp_queue.begin(), temp_queue.end(),
-                      std::back_inserter(uart_rx_lines));
+            std::copy(temp_queue.begin(), temp_queue.end(), std::back_inserter(uart_rx_lines));
             temp_queue.clear();
         }
     }

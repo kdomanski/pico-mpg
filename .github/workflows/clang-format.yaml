@@ -13,4 +13,4 @@ jobs:
         source: '.'
         extensions: 'hpp,cpp'
         clangFormatVersion: 11
-        style: "{BasedOnStyle: llvm, IndentWidth: 4}"
+        style: "{BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 120}"

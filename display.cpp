@@ -162,16 +162,13 @@ static void init_reg() {
     data(0x05);
 }
 
-static void set_windows(uint8_t Xstart, uint8_t Ystart, uint8_t Xend,
-                        uint8_t Yend) {
+static void set_windows(uint8_t Xstart, uint8_t Ystart, uint8_t Xend, uint8_t Yend) {
     // set the X coordinates
     command(0x2A);
-    data(0x00); // Set the horizontal starting point to the high octet
-    data((Xstart & 0xff) +
-         LCD_X_Adjust); // Set the horizontal starting point to the low octet
-    data(0x00);         // Set the horizontal end to the high octet
-    data(((Xend - 1) & 0xff) +
-         LCD_X_Adjust); // Set the horizontal end to the low octet
+    data(0x00);                               // Set the horizontal starting point to the high octet
+    data((Xstart & 0xff) + LCD_X_Adjust);     // Set the horizontal starting point to the low octet
+    data(0x00);                               // Set the horizontal end to the high octet
+    data(((Xend - 1) & 0xff) + LCD_X_Adjust); // Set the horizontal end to the low octet
 
     // set the Y coordinates
     command(0x2B);
@@ -230,8 +227,7 @@ void Display::Fill(uint16_t color) {
 }
 
 void Display::FillRect(size_t x, size_t y, size_t w, size_t h, uint16_t color) {
-    if (h < 1 || w < 1 || x + w <= 0 || y + h <= 0 || y >= LCD_Y ||
-        x >= LCD_X) {
+    if (h < 1 || w < 1 || x + w <= 0 || y + h <= 0 || y >= LCD_Y || x >= LCD_X) {
         return;
     }
 
@@ -280,12 +276,10 @@ void Display::Text(const std::string &s, size_t x0, size_t y0, uint16_t color) {
             if (x0 < 0 || x0 >= LCD_X) // clip x
                 continue;
 
-            uint8_t vline_data =
-                chr_data[j]; // each byte is a column of 8 pixels, LSB at top
-            for (int y = y0; vline_data;
-                 vline_data >>= 1, y++) {      // scan over vertical column
-                if (vline_data & 1) {          // only draw if pixel set
-                    if (0 <= y && y < LCD_Y) { // clip y
+            uint8_t vline_data = chr_data[j];                     // each byte is a column of 8 pixels, LSB at top
+            for (int y = y0; vline_data; vline_data >>= 1, y++) { // scan over vertical column
+                if (vline_data & 1) {                             // only draw if pixel set
+                    if (0 <= y && y < LCD_Y) {                    // clip y
                         this->SetPixel(x0, y, color);
                     }
                 }
@@ -294,8 +288,7 @@ void Display::Text(const std::string &s, size_t x0, size_t y0, uint16_t color) {
     }
 }
 
-void Display::TextLarge(const std::string &s, size_t x0, size_t y0,
-                        uint16_t color) {
+void Display::TextLarge(const std::string &s, size_t x0, size_t y0, uint16_t color) {
     for (char c : s) {
         // get char and make sure its in range of font
         if (c < 32 || c > 127)
@@ -306,13 +299,11 @@ void Display::TextLarge(const std::string &s, size_t x0, size_t y0,
             if (x0 < 0 || x0 >= LCD_X) // clip x
                 continue;
 
-            uint8_t vline_data =
-                chr_data[j]; // each byte is a column of 8 pixels, LSB at top
+            uint8_t vline_data = chr_data[j]; // each byte is a column of 8 pixels, LSB at top
 
-            for (int y = y0; vline_data;
-                 vline_data >>= 1, y += 2) {   // scan over vertical column
-                if (vline_data & 1) {          // only draw if pixel set
-                    if (0 <= y && y < LCD_Y) { // clip y
+            for (int y = y0; vline_data; vline_data >>= 1, y += 2) { // scan over vertical column
+                if (vline_data & 1) {                                // only draw if pixel set
+                    if (0 <= y && y < LCD_Y) {                       // clip y
                         this->SetPixel(x0, y, color);
                     }
                     if (0 <= y + 1 && y + 1 < LCD_Y) { // clip y
@@ -324,13 +315,11 @@ void Display::TextLarge(const std::string &s, size_t x0, size_t y0,
             if (x0 + 1 < 0 || x0 + 1 >= LCD_X) // clip x
                 continue;
 
-            vline_data =
-                chr_data[j]; // each byte is a column of 8 pixels, LSB at top
+            vline_data = chr_data[j]; // each byte is a column of 8 pixels, LSB at top
 
-            for (int y = y0; vline_data;
-                 vline_data >>= 1, y += 2) {   // scan over vertical column
-                if (vline_data & 1) {          // only draw if pixel set
-                    if (0 <= y && y < LCD_Y) { // clip y
+            for (int y = y0; vline_data; vline_data >>= 1, y += 2) { // scan over vertical column
+                if (vline_data & 1) {                                // only draw if pixel set
+                    if (0 <= y && y < LCD_Y) {                       // clip y
                         this->SetPixel(x0 + 1, y, color);
                     }
                     if (0 <= y + 1 && y + 1 < LCD_Y) { // clip y
@@ -348,7 +337,6 @@ void Display::Show() {
     set_windows(0, 0, LCD_X, LCD_Y);
     dc_data();
     cs_select_on();
-    spi_write_blocking(SPI_PORT, this->_framebuffer.data(),
-                       this->_framebuffer.size());
+    spi_write_blocking(SPI_PORT, this->_framebuffer.data(), this->_framebuffer.size());
     cs_select_off();
 }
