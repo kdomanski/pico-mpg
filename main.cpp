@@ -26,6 +26,7 @@ int main() {
     auto display = std::make_unique<Display>();
     display->Fill(display->blue);
     display->Rect(4, 4, LCD_X - 8, LCD_Y - 8, display->white);
+    display->Text("Testing.", 20, 20, display->white);
     display->Show();
 
     uint64_t last_poll = time_us_64();

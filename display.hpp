@@ -10,6 +10,8 @@ class Display {
     void Fill(uint16_t color);
     void FillRect(size_t x, size_t y, size_t w, size_t h, uint16_t color);
     void Rect(size_t x, size_t y, size_t w, size_t h, uint16_t color);
+    void SetPixel(size_t x, size_t y, uint16_t color);
+    void Text(const std::string &s, size_t x0, size_t y0, uint16_t color);
 
     const uint16_t red = 0x07E0;
     const uint16_t green = 0x001f;

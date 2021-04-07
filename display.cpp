@@ -4,6 +4,7 @@
 #include "pico/stdlib.h"
 
 #include "display.hpp"
+#include "font_petme128_8x8.h"
 
 #define SPI_PORT spi1
 
@@ -256,6 +257,41 @@ void Display::Rect(size_t x, size_t y, size_t w, size_t h, uint16_t color) {
     this->FillRect(x, y + h - 1, w, 1, color);
     this->FillRect(x, y, 1, h, color);
     this->FillRect(x + w - 1, y, 1, h, color);
+}
+
+void Display::SetPixel(size_t x, size_t y, uint16_t color) {
+    const uint8_t lower = (color >> 8) & 0xff;
+    const uint8_t upper = color & 0xff;
+
+    const size_t d = (x + (y * LCD_X)) * 2;
+
+    this->_framebuffer[d] = upper;
+    this->_framebuffer[d + 1] = lower;
+}
+
+void Display::Text(const std::string &s, size_t x0, size_t y0, uint16_t color) {
+    for (char c : s) {
+        // get char and make sure its in range of font
+        if (c < 32 || c > 127)
+            c = 127;
+        const uint8_t *chr_data = &font_petme128_8x8[(c - 32) * 8];
+
+        for (size_t j = 0; j < 8; j++, x0++) {
+            if (x0 < 0 || x0 >= LCD_X) // clip x
+                continue;
+
+            uint8_t vline_data =
+                chr_data[j]; // each byte is a column of 8 pixels, LSB at top
+            for (int y = y0; vline_data;
+                 vline_data >>= 1, y++) {      // scan over vertical column
+                if (vline_data & 1) {          // only draw if pixel set
+                    if (0 <= y && y < LCD_Y) { // clip y
+                        this->SetPixel(x0, y, color);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void Display::Show() {
