@@ -294,6 +294,56 @@ void Display::Text(const std::string &s, size_t x0, size_t y0, uint16_t color) {
     }
 }
 
+void Display::TextLarge(const std::string &s, size_t x0, size_t y0,
+                        uint16_t color) {
+    for (char c : s) {
+        // get char and make sure its in range of font
+        if (c < 32 || c > 127)
+            c = 127;
+        const uint8_t *chr_data = &font_petme128_8x8[(c - 32) * 8];
+
+        for (size_t j = 0; j < 8; j++, x0 += 2) {
+            if (x0 < 0 || x0 >= LCD_X) // clip x
+                continue;
+
+            uint8_t vline_data =
+                chr_data[j]; // each byte is a column of 8 pixels, LSB at top
+
+            for (int y = y0; vline_data;
+                 vline_data >>= 1, y += 2) {   // scan over vertical column
+                if (vline_data & 1) {          // only draw if pixel set
+                    if (0 <= y && y < LCD_Y) { // clip y
+                        this->SetPixel(x0, y, color);
+                    }
+                    if (0 <= y + 1 && y + 1 < LCD_Y) { // clip y
+                        this->SetPixel(x0, y + 1, color);
+                    }
+                }
+            }
+
+            if (x0 + 1 < 0 || x0 + 1 >= LCD_X) // clip x
+                continue;
+
+            vline_data =
+                chr_data[j]; // each byte is a column of 8 pixels, LSB at top
+
+            for (int y = y0; vline_data;
+                 vline_data >>= 1, y += 2) {   // scan over vertical column
+                if (vline_data & 1) {          // only draw if pixel set
+                    if (0 <= y && y < LCD_Y) { // clip y
+                        this->SetPixel(x0 + 1, y, color);
+                    }
+                    if (0 <= y + 1 && y + 1 < LCD_Y) { // clip y
+                        this->SetPixel(x0 + 1, y + 1, color);
+                    }
+                }
+            }
+        }
+
+        x0 -= 2; // tighten the text
+    }
+}
+
 void Display::Show() {
     set_windows(0, 0, LCD_X, LCD_Y);
     dc_data();

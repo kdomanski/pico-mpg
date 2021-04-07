@@ -26,7 +26,9 @@ int main() {
     auto display = std::make_unique<Display>();
     display->Fill(display->blue);
     display->Rect(4, 4, LCD_X - 8, LCD_Y - 8, display->white);
-    display->Text("Testing.", 20, 20, display->white);
+    display->TextLarge("SpinnyBoi", (LCD_X - 126) / 2, 12, display->white);
+    display->TextLarge("X:", 10, 40, display->white);
+    display->TextLarge("Z:", 10, 60, display->white);
     display->Show();
 
     uint64_t last_poll = time_us_64();
