@@ -49,6 +49,8 @@ void on_uart_rx() {
         mutex_exit(&my_mutex);
 }
 
+void grbl_uart_send(const std::string &s) { uart_puts(UART_ID, s.c_str()); }
+
 void init_grbl_uart() {
     uart_init(UART_ID, 2400);
 
